@@ -3,37 +3,40 @@ import {DarkTheme, NavigationContainer} from "@react-navigation/native";
 import {createNativeStackNavigator} from "@react-navigation/native-stack";
 import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
 import {LogIn} from "./src/Screens/LogIn/LogIn";
-import {Profile} from "./src/Screens/Profile/Profile";
 import {Chat} from "./src/Screens/Chat/Chat";
 import {Settings} from "./src/Screens/Settings/Settings";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import {SafeAreaProvider} from 'react-native-safe-area-context';
+import {getIsAuth} from "./src/Redux/Selectors";
+import {Provider, useSelector} from "react-redux";
+import store from "./src/Redux/Store";
+import {getAuthUserData} from "./src/Redux/AuthReducer";
+import {Users} from "./src/Screens/Users/Users";
 
 
-const App = () => {
+const MainApp = () => {
 
-    const isAuth = true
-
+    const isAuth = useSelector(getIsAuth)
     const Stack = createNativeStackNavigator()
     const Tab = createBottomTabNavigator()
 
+    getAuthUserData()
+
     return (
-        <SafeAreaProvider>
-
-
         <NavigationContainer theme={DarkTheme}>
             {
-                isAuth ?
-                    <Tab.Navigator initialRouteName={'Profile'}
+                !isAuth ?
+                    <Tab.Navigator initialRouteName={'Users'}
                                    screenOptions={({route}) => ({
                                        tabBarIcon: ({focused, size}) => {
                                            let iconName
                                            let iconColor
+
                                            if (route.name === 'Chat') {
                                                iconName = 'chatbubbles'
                                                iconColor = focused ? '#fff' : '#736b6b'
-                                           } else if (route.name === 'Profile') {
-                                               iconName = 'person'
+                                           } else if (route.name === 'Users') {
+                                               iconName = 'people-sharp'
                                                iconColor = focused ? '#fff' : '#736b6b'
                                            } else if (route.name === 'Settings') {
                                                iconName = 'cog'
@@ -47,7 +50,7 @@ const App = () => {
                                        tabBarInactiveTintColor: '#736b6b',
                                    })}>
                         <Tab.Screen name={'Chat'} component={Chat}/>
-                        <Tab.Screen name={'Profile'} component={Profile}/>
+                        <Tab.Screen name={'Users'} component={Users}/>
                         <Tab.Screen name={'Settings'} component={Settings}/>
                     </Tab.Navigator>
                     :
@@ -55,11 +58,18 @@ const App = () => {
                         <Stack.Screen name={'Log In'} component={LogIn}/>
                     </Stack.Navigator>
             }
-
-
         </NavigationContainer>
-        </SafeAreaProvider>
     );
 };
 
-export default App;
+const App = () => {
+    return (
+        <Provider store={store}>
+            <SafeAreaProvider>
+                <MainApp/>
+            </SafeAreaProvider>
+        </Provider>
+    )
+}
+
+export default App
