@@ -12,6 +12,7 @@ import {Provider, useSelector} from "react-redux";
 import store from "./src/Redux/Store";
 import {getAuthUserData} from "./src/Redux/AuthReducer";
 import {Users} from "./src/Screens/Users/Users";
+import {StatusBar} from "react-native";
 
 
 const MainApp = () => {
@@ -24,6 +25,10 @@ const MainApp = () => {
 
     return (
         <NavigationContainer theme={DarkTheme}>
+            <StatusBar
+                animated={true}
+                backgroundColor= '#121212FF'
+            />
             {
                 !isAuth ?
                     <Tab.Navigator initialRouteName={'Users'}

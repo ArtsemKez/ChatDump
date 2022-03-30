@@ -5,3 +5,7 @@ export const getIsAuth = (state) => {
 export const getUsers = (state) => {
     return state.usersScreen.users
 }
+
+export const getIsPreloader = (state) => {
+    return state.usersScreen.isPreloader
+}
